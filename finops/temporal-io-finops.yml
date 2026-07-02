@@ -1,0 +1,103 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Temporal
+providerId: temporal-io
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- Durable Execution
+- Workflow Orchestration
+- Temporal Cloud
+- Open Source
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Temporal spend. The core Temporal server is open source (MIT)
+  and free to self-host - in that model the cost is your own compute, database
+  (persistence/visibility store), and operations, with no vendor invoice.
+  Temporal Cloud is the managed offering, billed primarily on Actions (the unit
+  of consumption - starting a workflow, recording a heartbeat, sending a signal,
+  timers, retries, and similar billable operations), plus active storage and
+  retained storage, against a plan minimum. Actions are volume-tiered, starting
+  around $50 per million and decreasing with scale. Because Actions map directly
+  to workflow and activity behavior, cost is driven by application design (retry
+  policies, heartbeat frequency, signal/timer volume, history size).
+notes: >-
+  Cloud per-unit rates (Action tiers, active/retained storage) are as of the
+  review date and are subject to change; verify on the Temporal Cloud pricing
+  page. For self-hosted deployments, the dominant costs are infrastructure
+  (Temporal services plus the persistence and visibility datastores) rather than
+  a Temporal license fee.
+sources:
+- https://temporal.io/pricing
+- https://docs.temporal.io/cloud/pricing
+- https://docs.temporal.io/cloud/actions
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Temporal Technologies
+serviceCategory: Compute and Workflow Orchestration
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Temporal Cloud
+  ServiceCategory: Compute and Workflow Orchestration
+  ProviderName: Temporal
+  PublisherName: Temporal Technologies
+  InvoiceIssuerName: Temporal Technologies
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: actions
+  description: Billable Temporal Cloud Actions - workflow starts, signals, queries, heartbeats, timers, retries, and similar operations. Volume-tiered per million.
+  unit: actions
+  aggregation: sum
+  dimensions:
+  - account
+  - namespace
+- name: active_storage
+  description: Active storage of open workflow execution state, billed per GB-hour.
+  unit: gigabyte-hours
+  aggregation: sum
+  dimensions:
+  - account
+  - namespace
+- name: retained_storage
+  description: Retained (closed workflow) storage kept per the namespace retention period, billed per GB-hour.
+  unit: gigabyte-hours
+  aggregation: sum
+  dimensions:
+  - account
+  - namespace
+- name: self_hosted_compute
+  description: Infrastructure cost of running the self-hosted Temporal cluster and its datastores (no Temporal invoice).
+  unit: hours
+  aggregation: sum
+  dimensions:
+  - deployment
+principles:
+- name: Visibility
+  description: Track Actions, active storage, and retained storage per namespace; on self-hosted, monitor Temporal service and datastore infrastructure costs.
+- name: Allocation
+  description: Map namespaces to workloads/teams so Actions and storage roll up to internal cost centers.
+- name: Optimization
+  description: Tune retry policies and heartbeat frequency to reduce Actions, shorten retention to cut retained storage, and self-host when volume makes owned infrastructure cheaper than Cloud Actions.
+- name: Accountability
+  description: Assign owners per namespace; review monthly Actions and storage against the plan minimum, or self-hosted infrastructure budget.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

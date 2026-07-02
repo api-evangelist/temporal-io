@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "Temporal HTTP API",
+    "description": "A REST/JSON subset of the Temporal WorkflowService, exposed by a first-party grpc-gateway under /api/v1. Temporal's primary and complete API is gRPC (github.com/temporalio/api); this HTTP API covers only a subset - worker task-polling RPCs remain gRPC-only. Base host: <namespace>.<account>.tmprl.cloud on Temporal Cloud, or localhost:7243 self-hosted (when the frontend HTTP port is enabled). Requests authenticate with a Bearer API key.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{apiKey}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "host", "value": "your-namespace.your-account.tmprl.cloud", "type": "string" },
+    { "key": "namespace", "value": "your-namespace", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Workflows",
+      "item": [
+        {
+          "name": "Start a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"workflowType\": { \"name\": \"YourWorkflow\" },\n  \"taskQueue\": { \"name\": \"your-task-queue\" }\n}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Starts a new workflow execution (gRPC StartWorkflowExecution)."
+          }
+        },
+        {
+          "name": "Describe a workflow execution",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Returns information about a workflow execution (gRPC DescribeWorkflowExecution)."
+          }
+        },
+        {
+          "name": "List workflow executions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows?query=", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows"], "query": [{ "key": "query", "value": "" }] },
+            "description": "Lists workflow executions with an optional visibility query (gRPC ListWorkflowExecutions)."
+          }
+        },
+        {
+          "name": "Count workflow executions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflow-count?query=", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflow-count"], "query": [{ "key": "query", "value": "" }] },
+            "description": "Counts workflow executions matching a query (gRPC CountWorkflowExecutions)."
+          }
+        },
+        {
+          "name": "Get workflow execution history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/history", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "history"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Returns the event history of a workflow execution (gRPC GetWorkflowExecutionHistory)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow Messaging",
+      "item": [
+        {
+          "name": "Signal a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"input\": { \"payloads\": [] }\n}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/signal/:signal_name", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "signal", ":signal_name"], "variable": [{ "key": "workflow_id", "value": "" }, { "key": "signal_name", "value": "" }] },
+            "description": "Sends a signal to a running workflow execution (gRPC SignalWorkflowExecution)."
+          }
+        },
+        {
+          "name": "Query a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/query/:query_type", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "query", ":query_type"], "variable": [{ "key": "workflow_id", "value": "" }, { "key": "query_type", "value": "" }] },
+            "description": "Executes a synchronous query against a workflow execution (gRPC QueryWorkflow)."
+          }
+        },
+        {
+          "name": "Update a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/update/:name", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "update", ":name"], "variable": [{ "key": "workflow_id", "value": "" }, { "key": "name", "value": "" }] },
+            "description": "Invokes an update handler on a running workflow execution (gRPC UpdateWorkflowExecution)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow Lifecycle",
+      "item": [
+        {
+          "name": "Request cancellation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/cancel", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "cancel"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Requests graceful cancellation of a workflow execution (gRPC RequestCancelWorkflowExecution)."
+          }
+        },
+        {
+          "name": "Terminate a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"\"\n}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/terminate", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "terminate"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Forcefully terminates a workflow execution (gRPC TerminateWorkflowExecution)."
+          }
+        },
+        {
+          "name": "Reset a workflow execution",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}/workflows/:workflow_id/reset", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}", "workflows", ":workflow_id", "reset"], "variable": [{ "key": "workflow_id", "value": "" }] },
+            "description": "Resets a workflow execution to a prior point, creating a new run (gRPC ResetWorkflowExecution)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Namespaces and Cluster",
+      "item": [
+        {
+          "name": "Describe a namespace",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces/{{namespace}}", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces", "{{namespace}}"] },
+            "description": "Returns namespace configuration and metadata (gRPC DescribeNamespace)."
+          }
+        },
+        {
+          "name": "List namespaces",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/namespaces", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "namespaces"] },
+            "description": "Lists namespaces visible to the caller (gRPC ListNamespaces)."
+          }
+        },
+        {
+          "name": "Get cluster info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/cluster-info", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "cluster-info"] },
+            "description": "Returns Temporal cluster information (gRPC GetClusterInfo)."
+          }
+        },
+        {
+          "name": "Get system info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "https://{{host}}/api/v1/system-info", "protocol": "https", "host": ["{{host}}"], "path": ["api", "v1", "system-info"] },
+            "description": "Returns server capabilities and system information (gRPC GetSystemInfo)."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Temporal
+providerId: temporal-io
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- Durable Execution
+- Workflow Orchestration
+- Temporal Cloud
+- Rate Limiting
+- Quotas
+description: >-
+  Temporal Cloud governs load per namespace with three related rate metrics.
+  APS (Actions Per Second) caps the rate of billable Actions - such as starting
+  or signaling a workflow - in a namespace, protecting the system from spikes.
+  RPS (Requests Per Second) controls the rate of gRPC requests at the service
+  level. OPS (Operations Per Second) is a lower-level measure of everything a
+  user does directly or that Temporal does on their behalf. Each namespace
+  defaults to On-Demand capacity at a 500 APS floor that auto-scales based on the
+  last 7 days of usage (comparing average and P90) and never drops below the
+  floor. Namespaces can switch to Provisioned capacity set with Temporal Resource
+  Units (TRUs), each adding 500 APS. Self-hosted Temporal has no vendor rate
+  limits - throughput is bounded by your own cluster and its dynamic-config rate
+  limiters.
+notes: >-
+  When APS/RPS/OPS limits are exceeded, Temporal Cloud throttles with
+  priority-based throttling (low-priority operations first; high-priority
+  operations like StartWorkflowExecution, SignalWorkflowExecution, and
+  UpdateWorkflowExecution are preserved when possible) and returns a gRPC
+  ResourceExhausted error, which surfaces as HTTP 429 on the HTTP API. SDK
+  clients automatically retry ResourceExhausted per the default gRPC retry
+  policy. Verify current defaults and capacity-mode behavior on the Temporal
+  Cloud docs during reconciliation.
+sources:
+- https://docs.temporal.io/cloud/limits
+- https://docs.temporal.io/cloud/capacity-modes
+- https://docs.temporal.io/best-practices/managing-aps-limits
+- https://temporal.io/change-log/rollout-of-aps-rate-limiting
+responseCodes:
+  throttled: 429
+  grpcThrottled: RESOURCE_EXHAUSTED
+limits:
+- name: Actions Per Second (APS)
+  scope: namespace
+  metric: actions
+  limit: 500 APS default floor (On-Demand, auto-scaling)
+  notes: Caps the rate of billable Actions per namespace; auto-scales on the last 7 days of usage and never falls below the floor.
+- name: Requests Per Second (RPS)
+  scope: namespace
+  metric: requests
+  limit: dynamic (per capacity mode)
+  notes: Rate of gRPC requests to the Temporal Service; dynamic under On-Demand, fixed by provisioned TRUs.
+- name: Operations Per Second (OPS)
+  scope: namespace
+  metric: operations
+  limit: dynamic
+  notes: Lower-level measure of all direct and Temporal-initiated operations that place load on the server.
+- name: Provisioned Capacity (TRU)
+  scope: namespace
+  metric: temporal-resource-units
+  limit: 500 APS per TRU
+  notes: Optional Provisioned mode sets fixed capacity; each Temporal Resource Unit adds 500 APS.
+- name: Self-Hosted Throughput
+  scope: deployment
+  metric: requests
+  limit: cluster-bound
+  notes: No vendor limit; governed by your own cluster sizing and dynamic-config rate limiters.
+policies:
+- name: Priority-Based Throttling
+  description: When limits are exceeded, low-priority operations are throttled first while high-priority operations (StartWorkflowExecution, SignalWorkflowExecution, UpdateWorkflowExecution) continue when possible.
+- name: ResourceExhausted Retry
+  description: Throttled requests return a gRPC ResourceExhausted error (HTTP 429 on the HTTP API); SDK clients automatically retry per the default gRPC retry policy.
+- name: Capacity Auto-Scaling
+  description: On-Demand namespaces auto-scale APS based on average and P90 usage over the last 7 days, never dropping below the 500 APS floor.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor server retry signals when throttled.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,213 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{apiKey}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Workflows", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Start a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The client-assigned workflow ID." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"workflowType\": { \"name\": \"YourWorkflow\" },\n  \"taskQueue\": { \"name\": \"your-task-queue\" }\n}" }
+          },
+          "docs": "Starts a new workflow execution (gRPC StartWorkflowExecution)."
+        },
+        {
+          "info": { "name": "Describe a workflow execution.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (execution.workflow_id)." }
+            ]
+          },
+          "docs": "Returns information about a workflow execution (gRPC DescribeWorkflowExecution)."
+        },
+        {
+          "info": { "name": "List workflow executions.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows?query=",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "query", "value": "", "type": "query", "description": "A List Filter (visibility query)." }
+            ]
+          },
+          "docs": "Lists workflow executions with an optional visibility query (gRPC ListWorkflowExecutions)."
+        },
+        {
+          "info": { "name": "Count workflow executions.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflow-count?query=",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "query", "value": "", "type": "query", "description": "A List Filter (visibility query)." }
+            ]
+          },
+          "docs": "Counts workflow executions matching a query (gRPC CountWorkflowExecutions)."
+        },
+        {
+          "info": { "name": "Get workflow execution history.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/history",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (execution.workflow_id)." }
+            ]
+          },
+          "docs": "Returns the event history of a workflow execution (gRPC GetWorkflowExecutionHistory)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Workflow Messaging", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Signal a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/signal/:signal_name",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (workflow_execution.workflow_id)." },
+              { "name": "signal_name", "value": "", "type": "path", "description": "The signal name." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"input\": { \"payloads\": [] }\n}" }
+          },
+          "docs": "Sends a signal to a running workflow execution (gRPC SignalWorkflowExecution)."
+        },
+        {
+          "info": { "name": "Query a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/query/:query_type",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (execution.workflow_id)." },
+              { "name": "query_type", "value": "", "type": "path", "description": "The query name (query.query_type)." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Executes a synchronous query against a workflow execution (gRPC QueryWorkflow)."
+        },
+        {
+          "info": { "name": "Update a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/update/:name",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (workflow_execution.workflow_id)." },
+              { "name": "name", "value": "", "type": "path", "description": "The update handler name." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Invokes an update handler on a running workflow execution (gRPC UpdateWorkflowExecution)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Workflow Lifecycle", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Request cancellation.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/cancel",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (workflow_execution.workflow_id)." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Requests graceful cancellation of a workflow execution (gRPC RequestCancelWorkflowExecution)."
+        },
+        {
+          "info": { "name": "Terminate a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/terminate",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (workflow_execution.workflow_id)." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"reason\": \"\"\n}" }
+          },
+          "docs": "Forcefully terminates a workflow execution (gRPC TerminateWorkflowExecution)."
+        },
+        {
+          "info": { "name": "Reset a workflow execution.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace/workflows/:workflow_id/reset",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." },
+              { "name": "workflow_id", "value": "", "type": "path", "description": "The workflow ID (workflow_execution.workflow_id)." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Resets a workflow execution to a prior point, creating a new run (gRPC ResetWorkflowExecution)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Namespaces and Cluster", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Describe a namespace.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces/:namespace",
+            "params": [
+              { "name": "namespace", "value": "", "type": "path", "description": "The Temporal namespace." }
+            ]
+          },
+          "docs": "Returns namespace configuration and metadata (gRPC DescribeNamespace)."
+        },
+        {
+          "info": { "name": "List namespaces.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/namespaces"
+          },
+          "docs": "Lists namespaces visible to the caller (gRPC ListNamespaces)."
+        },
+        {
+          "info": { "name": "Get cluster info.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/cluster-info"
+          },
+          "docs": "Returns Temporal cluster information (gRPC GetClusterInfo)."
+        },
+        {
+          "info": { "name": "Get system info.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://{{host}}/api/v1/system-info"
+          },
+          "docs": "Returns server capabilities and system information (gRPC GetSystemInfo)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,151 @@
+aid: temporal-io
+url: https://raw.githubusercontent.com/api-evangelist/temporal-io/refs/heads/main/apis.yml
+name: Temporal
+kind: company
+description: >-
+  Temporal is a durable execution platform for orchestrating long-running,
+  fault-tolerant workflows. Its primary API surface is gRPC - the WorkflowService,
+  OperatorService, and (on Temporal Cloud) the Cloud Operations API are defined as
+  protobuf in github.com/temporalio/api and github.com/temporalio/cloud-api. Temporal
+  also ships a first-party HTTP API: a grpc-gateway that maps a REST/JSON subset of
+  the WorkflowService onto paths under /api/v1, for automation and environments where
+  gRPC is impractical. Temporal is open source (MIT) and self-hostable, and is also
+  available as the managed Temporal Cloud.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Durable Execution
+- Workflow Orchestration
+- gRPC
+- Workflows
+- Open Source
+- Temporal Cloud
+created: '2026-07-02'
+modified: '2026-07-02'
+specificationVersion: '0.19'
+apis:
+- aid: temporal-io:temporal-io-workflow-service-api
+  name: Temporal Workflow Service API
+  tags:
+  - Workflows
+  - gRPC
+  - Durable Execution
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  properties:
+  - url: https://docs.temporal.io/references/api-reference
+    type: Documentation
+  - url: https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+    type: SourceCode
+  - url: openapi/temporal-io-openapi.yml
+    type: OpenAPI
+  description: The core Temporal gRPC service. Clients and workers use it to start,
+    signal, query, describe, list, reset, terminate, and cancel workflow executions,
+    to poll and complete workflow/activity/Nexus tasks, and to manage schedules,
+    updates, and batch operations. Defined as protobuf (WorkflowService) and served
+    over gRPC on port 7233; there is no public REST surface for the full service -
+    only the HTTP API subset (see the Temporal HTTP API).
+- aid: temporal-io:temporal-io-http-api
+  name: Temporal HTTP API
+  tags:
+  - HTTP
+  - REST
+  - Workflows
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.temporal.io/develop/go/temporal-clients
+  baseURL: https://<namespace>.<account>.tmprl.cloud/api/v1
+  properties:
+  - url: https://docs.temporal.io/references/api-reference
+    type: Documentation
+  - url: openapi/temporal-io-openapi.yml
+    type: OpenAPI
+  - url: collections/temporal-io.postman_collection.json
+    type: PostmanCollection
+  - url: collections/temporal-io.opencollection.json
+    type: OpenCollection
+  description: A first-party grpc-gateway that maps a REST/JSON subset of the
+    WorkflowService onto HTTP paths under /api/v1 (for example POST
+    /api/v1/namespaces/{namespace}/workflows/{workflow_id} to start a workflow).
+    It supports the same core operations as the gRPC API - start, describe, list,
+    signal, query, terminate, cancel, reset, and read history - using standard HTTP
+    and Bearer (API key) auth. Not all gRPC methods are exposed over HTTP; the
+    worker task-polling RPCs remain gRPC-only.
+- aid: temporal-io:temporal-io-operator-service-api
+  name: Temporal Operator Service API
+  tags:
+  - Operator
+  - Namespaces
+  - Search Attributes
+  - Nexus
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  properties:
+  - url: https://docs.temporal.io/references/api-reference
+    type: Documentation
+  - url: https://github.com/temporalio/api/blob/master/temporal/api/operatorservice/v1/service.proto
+    type: SourceCode
+  description: The gRPC OperatorService for cluster-level administration - managing
+    custom search attributes (add/remove/list), Nexus endpoints (create/get/update/
+    delete/list), remote clusters, and namespace deletion. A handful of methods
+    (ListSearchAttributes and the Nexus endpoint operations) also carry HTTP
+    annotations; the rest are gRPC-only.
+- aid: temporal-io:temporal-io-cloud-operations-api
+  name: Temporal Cloud Operations API
+  tags:
+  - Temporal Cloud
+  - Control Plane
+  - Namespaces
+  - Users
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.temporal.io/ops
+  baseURL: https://saas-api.tmprl.cloud/api/v1
+  properties:
+  - url: https://docs.temporal.io/ops
+    type: Documentation
+  - url: https://github.com/temporalio/cloud-api
+    type: SourceCode
+  description: The Temporal Cloud control-plane API (CloudService) for programmatically
+    managing Temporal Cloud resources - namespaces, users, service accounts, API
+    keys, regions, account settings, Nexus endpoints, and usage. It is exposed both
+    as gRPC (saas-api.tmprl.cloud:443, with a temporal-cloud-api-version header) and
+    as an HTTP/REST grpc-gateway under https://saas-api.tmprl.cloud/api/v1 (public
+    preview). Distinct from the per-namespace data-plane WorkflowService.
+- aid: temporal-io:temporal-io-nexus-api
+  name: Temporal Nexus API
+  tags:
+  - Nexus
+  - Cross-Namespace
+  - RPC
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.temporal.io/nexus
+  baseURL: https://docs.temporal.io/nexus
+  properties:
+  - url: https://docs.temporal.io/nexus
+    type: Documentation
+  - url: https://github.com/temporalio/api/blob/master/temporal/api/nexus/v1/message.proto
+    type: SourceCode
+  description: Temporal Nexus connects Temporal applications across namespaces and
+    teams via named Nexus endpoints backed by synchronous and asynchronous Nexus
+    operations. Endpoints are registered through the OperatorService (Create/Get/
+    Update/Delete/ListNexusEndpoints) and workers serve them through the
+    WorkflowService Nexus task-queue RPCs (PollNexusTaskQueue,
+    RespondNexusTaskCompleted, RespondNexusTaskFailed). Transport is gRPC.
+common:
+- type: GitHubOrganization
+  url: https://github.com/temporalio
+- type: LinkedIn
+  url: https://www.linkedin.com/company/temporal-technologies
+- type: Website
+  url: https://temporal.io/
+- type: Documentation
+  url: https://docs.temporal.io
+- type: Plans
+  url: plans/temporal-io-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/temporal-io-rate-limits.yml
+- type: FinOps
+  url: finops/temporal-io-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

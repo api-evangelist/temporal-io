@@ -1,0 +1,816 @@
+openapi: 3.0.3
+info:
+  title: Temporal HTTP API
+  description: >-
+    The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON
+    subset of the Temporal WorkflowService (gRPC) onto HTTP paths under
+    `/api/v1`. Temporal's primary and complete API surface is gRPC
+    (WorkflowService and OperatorService, defined as protobuf in
+    github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and
+    environments where gRPC is impractical, and it exposes only a subset of the
+    gRPC methods. The worker task-polling and task-completion RPCs
+    (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted,
+    PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain
+    gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS;
+    self-hosted it is served by the frontend service when the HTTP port is
+    enabled. Requests authenticate with a Bearer API key (or mTLS on
+    self-hosted). The paths and verbs below are drawn from the google.api.http
+    annotations on the WorkflowService proto and are modeled here, not exhaustively
+    confirmed against a live namespace.
+  version: '1.0'
+  contact:
+    name: Temporal Technologies
+    url: https://temporal.io
+  license:
+    name: MIT
+    url: https://github.com/temporalio/api/blob/master/LICENSE
+servers:
+  - url: https://{namespace}.{account}.tmprl.cloud/api/v1
+    description: Temporal Cloud (per-namespace HTTP API endpoint)
+    variables:
+      namespace:
+        default: your-namespace
+        description: Your Temporal Cloud namespace name.
+      account:
+        default: your-account
+        description: Your Temporal Cloud account (short) ID.
+  - url: http://localhost:7243/api/v1
+    description: Self-hosted frontend HTTP API (when the HTTP port is enabled)
+security:
+  - bearerAuth: []
+tags:
+  - name: Workflows
+    description: Start, describe, list, count, and read the history of workflow executions.
+  - name: Workflow Messaging
+    description: Signal, query, and update running workflow executions.
+  - name: Workflow Lifecycle
+    description: Cancel, terminate, and reset workflow executions.
+  - name: Namespaces
+    description: Read namespace metadata (read-only subset over HTTP).
+  - name: Cluster
+    description: Cluster and system information.
+paths:
+  /namespaces/{namespace}/workflows/{workflow_id}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - name: workflow_id
+        in: path
+        required: true
+        description: The workflow ID to start (client-assigned).
+        schema:
+          type: string
+    post:
+      operationId: startWorkflowExecution
+      tags:
+        - Workflows
+      summary: Start a workflow execution
+      description: >-
+        Starts a new workflow execution. Maps to the gRPC
+        StartWorkflowExecution RPC. The request body carries the workflow type,
+        task queue, input, and options.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartWorkflowExecutionRequest'
+      responses:
+        '200':
+          description: The started workflow execution's run ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartWorkflowExecutionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/ResourceExhausted'
+  /namespaces/{namespace}/workflows/{execution.workflow_id}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - name: execution.workflow_id
+        in: path
+        required: true
+        description: The workflow ID of the execution to describe.
+        schema:
+          type: string
+    get:
+      operationId: describeWorkflowExecution
+      tags:
+        - Workflows
+      summary: Describe a workflow execution
+      description: >-
+        Returns information about the specified workflow execution - its status,
+        type, task queue, timestamps, pending activities, and more. Maps to the
+        gRPC DescribeWorkflowExecution RPC.
+      parameters:
+        - name: execution.run_id
+          in: query
+          required: false
+          description: Optional run ID; defaults to the latest run.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details about the workflow execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DescribeWorkflowExecutionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+    get:
+      operationId: listWorkflowExecutions
+      tags:
+        - Workflows
+      summary: List workflow executions
+      description: >-
+        Lists workflow executions in a namespace, optionally filtered with a
+        List Filter (SQL-like visibility query). Maps to the gRPC
+        ListWorkflowExecutions RPC.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          description: A List Filter (visibility query) to filter executions.
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: next_page_token
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: A page of workflow executions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWorkflowExecutionsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /namespaces/{namespace}/workflow-count:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+    get:
+      operationId: countWorkflowExecutions
+      tags:
+        - Workflows
+      summary: Count workflow executions
+      description: >-
+        Returns the number of workflow executions matching a visibility query.
+        Maps to the gRPC CountWorkflowExecutions RPC.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The matching execution count.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: string
+                    format: int64
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /namespaces/{namespace}/archived-workflows:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+    get:
+      operationId: listArchivedWorkflowExecutions
+      tags:
+        - Workflows
+      summary: List archived workflow executions
+      description: >-
+        Lists workflow executions that have been archived. Maps to the gRPC
+        ListArchivedWorkflowExecutions RPC.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: next_page_token
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: A page of archived workflow executions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWorkflowExecutionsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /namespaces/{namespace}/workflows/{execution.workflow_id}/history:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/ExecutionWorkflowId'
+    get:
+      operationId: getWorkflowExecutionHistory
+      tags:
+        - Workflows
+      summary: Get workflow execution history
+      description: >-
+        Returns the event history of a workflow execution. Maps to the gRPC
+        GetWorkflowExecutionHistory RPC.
+      parameters:
+        - name: execution.run_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: next_page_token
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: The workflow event history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkflowExecutionHistoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{execution.workflow_id}/history-reverse:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/ExecutionWorkflowId'
+    get:
+      operationId: getWorkflowExecutionHistoryReverse
+      tags:
+        - Workflows
+      summary: Get workflow execution history (reverse)
+      description: >-
+        Returns the event history of a workflow execution in reverse order. Maps
+        to the gRPC GetWorkflowExecutionHistoryReverse RPC.
+      parameters:
+        - name: execution.run_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: next_page_token
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: The workflow event history in reverse order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkflowExecutionHistoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/signal/{signal_name}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+      - name: signal_name
+        in: path
+        required: true
+        description: The name of the signal to send.
+        schema:
+          type: string
+    post:
+      operationId: signalWorkflowExecution
+      tags:
+        - Workflow Messaging
+      summary: Signal a workflow execution
+      description: >-
+        Sends a signal (named message with optional payload) to a running
+        workflow execution. Maps to the gRPC SignalWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalWorkflowExecutionRequest'
+      responses:
+        '200':
+          description: The signal was accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/ResourceExhausted'
+  /namespaces/{namespace}/workflows/{execution.workflow_id}/query/{query.query_type}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/ExecutionWorkflowId'
+      - name: query.query_type
+        in: path
+        required: true
+        description: The name of the query to execute.
+        schema:
+          type: string
+    post:
+      operationId: queryWorkflow
+      tags:
+        - Workflow Messaging
+      summary: Query a workflow execution
+      description: >-
+        Executes a synchronous query against a running (or closed) workflow
+        execution and returns the query result. Maps to the gRPC QueryWorkflow
+        RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryWorkflowRequest'
+      responses:
+        '200':
+          description: The query result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryWorkflowResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/update/{name}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+      - name: name
+        in: path
+        required: true
+        description: The name of the update handler to invoke.
+        schema:
+          type: string
+    post:
+      operationId: updateWorkflowExecution
+      tags:
+        - Workflow Messaging
+      summary: Update a workflow execution
+      description: >-
+        Invokes an update handler on a running workflow execution, optionally
+        waiting for a specified lifecycle stage, and returns the update result.
+        Maps to the gRPC UpdateWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The update outcome.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: requestCancelWorkflowExecution
+      tags:
+        - Workflow Lifecycle
+      summary: Request cancellation of a workflow execution
+      description: >-
+        Requests graceful cancellation of a workflow execution. Maps to the gRPC
+        RequestCancelWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Cancellation was requested.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/terminate:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: terminateWorkflowExecution
+      tags:
+        - Workflow Lifecycle
+      summary: Terminate a workflow execution
+      description: >-
+        Forcefully terminates a workflow execution. Maps to the gRPC
+        TerminateWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminateWorkflowExecutionRequest'
+      responses:
+        '200':
+          description: The workflow execution was terminated.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/reset:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+      - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: resetWorkflowExecution
+      tags:
+        - Workflow Lifecycle
+      summary: Reset a workflow execution
+      description: >-
+        Resets a workflow execution to a prior point in its history, creating a
+        new run. Maps to the gRPC ResetWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The reset run ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}:
+    parameters:
+      - $ref: '#/components/parameters/Namespace'
+    get:
+      operationId: describeNamespace
+      tags:
+        - Namespaces
+      summary: Describe a namespace
+      description: >-
+        Returns configuration and metadata for a namespace. Maps to the gRPC
+        DescribeNamespace RPC. Namespace creation and updates on Temporal Cloud
+        are performed through the Cloud Operations API, not this data-plane HTTP
+        API.
+      responses:
+        '200':
+          description: Namespace configuration and metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces:
+    get:
+      operationId: listNamespaces
+      tags:
+        - Namespaces
+      summary: List namespaces
+      description: >-
+        Lists namespaces visible to the caller. Maps to the gRPC ListNamespaces
+        RPC.
+      parameters:
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: next_page_token
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: A page of namespaces.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /cluster-info:
+    get:
+      operationId: getClusterInfo
+      tags:
+        - Cluster
+      summary: Get cluster info
+      description: >-
+        Returns information about the Temporal cluster (versions, capabilities).
+        Maps to the gRPC GetClusterInfo RPC.
+      responses:
+        '200':
+          description: Cluster information.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /system-info:
+    get:
+      operationId: getSystemInfo
+      tags:
+        - Cluster
+      summary: Get system info
+      description: >-
+        Returns server capabilities and system information. Maps to the gRPC
+        GetSystemInfo RPC.
+      responses:
+        '200':
+          description: System information and capabilities.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer API key. On Temporal Cloud, pass an API key as
+        `Authorization: Bearer <api-key>`. Self-hosted deployments may use mTLS
+        instead. Requests are scoped to the namespace in the path.
+  parameters:
+    Namespace:
+      name: namespace
+      in: path
+      required: true
+      description: The Temporal namespace.
+      schema:
+        type: string
+    ExecutionWorkflowId:
+      name: execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
+    WorkflowExecutionWorkflowId:
+      name: workflow_execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    ResourceExhausted:
+      description: >-
+        The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a
+        ResourceExhausted status; over HTTP this surfaces as 429. Clients should
+        back off and retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  schemas:
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    Payloads:
+      type: object
+      description: >-
+        Temporal payloads envelope. Each payload carries base64-encoded metadata
+        and data.
+      properties:
+        payloads:
+          type: array
+          items:
+            type: object
+            properties:
+              metadata:
+                type: object
+                additionalProperties:
+                  type: string
+                  format: byte
+              data:
+                type: string
+                format: byte
+    WorkflowType:
+      type: object
+      properties:
+        name:
+          type: string
+    TaskQueue:
+      type: object
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+    StartWorkflowExecutionRequest:
+      type: object
+      properties:
+        namespace:
+          type: string
+        workflowId:
+          type: string
+        workflowType:
+          $ref: '#/components/schemas/WorkflowType'
+        taskQueue:
+          $ref: '#/components/schemas/TaskQueue'
+        input:
+          $ref: '#/components/schemas/Payloads'
+        requestId:
+          type: string
+        workflowIdReusePolicy:
+          type: string
+        workflowExecutionTimeout:
+          type: string
+        workflowRunTimeout:
+          type: string
+        workflowTaskTimeout:
+          type: string
+    StartWorkflowExecutionResponse:
+      type: object
+      properties:
+        runId:
+          type: string
+    SignalWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        signalName:
+          type: string
+        input:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
+    QueryWorkflowRequest:
+      type: object
+      properties:
+        execution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        query:
+          type: object
+          properties:
+            queryType:
+              type: string
+            queryArgs:
+              $ref: '#/components/schemas/Payloads'
+    QueryWorkflowResponse:
+      type: object
+      properties:
+        queryResult:
+          $ref: '#/components/schemas/Payloads'
+        queryRejected:
+          type: object
+          additionalProperties: true
+    TerminateWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        reason:
+          type: string
+        details:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
+    DescribeWorkflowExecutionResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        workflowExecutionInfo:
+          type: object
+          additionalProperties: true
+        pendingActivities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    ListWorkflowExecutionsResponse:
+      type: object
+      properties:
+        executions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        nextPageToken:
+          type: string
+          format: byte
+    GetWorkflowExecutionHistoryResponse:
+      type: object
+      properties:
+        history:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+        nextPageToken:
+          type: string
+          format: byte
+        archived:
+          type: boolean

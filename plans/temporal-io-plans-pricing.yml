@@ -1,0 +1,176 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Temporal
+providerId: temporal-io
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- Durable Execution
+- Workflow Orchestration
+- Temporal Cloud
+- Open Source
+- Plans
+description: >-
+  Temporal has two consumption models. The core Temporal server is open source
+  (MIT) and free to self-host with no license fee - you pay only for your own
+  infrastructure. Temporal Cloud is the managed offering, sold in four plans
+  (Essentials, Business, Enterprise, Mission Critical) with consumption-based
+  billing on Actions, plus active and retained storage. Actions are the primary
+  billable unit (starting a workflow, recording a heartbeat, sending a signal,
+  timers, retries, etc.). Actions are volume-tiered starting at $50 per million
+  and decreasing with scale. All APIs (WorkflowService gRPC, the HTTP API, the
+  OperatorService, and the Cloud Operations API) are included with a namespace;
+  there is no separate per-API-call charge beyond Actions and storage.
+notes: >-
+  Prices reflect the Temporal Cloud pricing page as of the review date and are
+  subject to change; verify current plan minimums, Action tiers, and storage
+  rates at https://docs.temporal.io/cloud/pricing and https://temporal.io/pricing
+  during reconciliation.
+sources:
+- https://temporal.io/pricing
+- https://docs.temporal.io/cloud/pricing
+- https://docs.temporal.io/cloud/actions
+- https://github.com/temporalio/temporal
+plans:
+- id: temporal-open-source
+  name: Open Source (Self-Hosted)
+  type: free
+  description: >-
+    The full Temporal server, MIT-licensed and self-hostable. Includes the
+    WorkflowService and OperatorService gRPC APIs, the HTTP API gateway, all SDKs,
+    schedules, Nexus, and the Web UI. No license fee or Action charges - cost is
+    your own compute, database, and operations.
+  entries:
+  - label: Self-Hosted Actions
+    name: self_hosted_actions
+    type: usage
+    metric: actions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free (self-hosted; you provide infrastructure)
+    userMultiplied: false
+  elements:
+  - name: WorkflowService gRPC API
+  - name: OperatorService gRPC API
+  - name: HTTP API Gateway
+  - name: Schedules and Nexus
+  - name: Web UI
+- id: temporal-cloud-essentials
+  name: Temporal Cloud - Essentials
+  type: usage
+  description: >-
+    Entry managed plan. Billed the greater of the plan minimum or a percentage of
+    usage spend, plus Actions and storage. Includes a 99.9% uptime SLA and basic
+    support.
+  entries:
+  - label: Plan Minimum
+    name: essentials_minimum
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: greater of $100/month or 5% of usage spend
+    userMultiplied: false
+  - label: Actions
+    name: essentials_actions
+    type: usage
+    metric: actions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000000
+    price: from $50 per million Actions (volume-tiered down to ~$25/million)
+    userMultiplied: false
+  elements:
+  - name: Managed Hosting
+  - name: 99.9% Uptime SLA
+  - name: Actions and Storage Billing
+- id: temporal-cloud-business
+  name: Temporal Cloud - Business
+  type: usage
+  description: >-
+    Mid-tier managed plan with faster support response and higher operational
+    commitments. Billed the greater of the plan minimum or a percentage of usage
+    spend, plus Actions and storage.
+  entries:
+  - label: Plan Minimum
+    name: business_minimum
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: greater of $500/month or 10% of usage spend
+    userMultiplied: false
+  - label: Actions
+    name: business_actions
+    type: usage
+    metric: actions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000000
+    price: volume-tiered Actions pricing
+    userMultiplied: false
+  elements:
+  - name: Managed Hosting
+  - name: Priority Support (P0 response)
+  - name: Higher SLA Options
+- id: temporal-cloud-enterprise
+  name: Temporal Cloud - Enterprise
+  type: enterprise
+  description: >-
+    Annually contracted plan for large-scale production usage. 24/7 support with
+    P0 response under 30 minutes, private Slack, and negotiated volume pricing.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales (annual)
+    userMultiplied: false
+  elements:
+  - name: Negotiated Volume Pricing
+  - name: 24/7 Support (P0 < 30 min)
+  - name: Private Slack
+- id: temporal-cloud-mission-critical
+  name: Temporal Cloud - Mission Critical
+  type: enterprise
+  description: >-
+    Top annually contracted plan for the most demanding workloads. P0 response
+    under 15 minutes, 24/7 support, private Slack, and a dedicated support
+    engineer.
+  entries:
+  - label: Mission Critical Agreement
+    name: mission_critical
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales (annual)
+    userMultiplied: false
+  elements:
+  - name: Dedicated Support Engineer
+  - name: 24/7 Support (P0 < 15 min)
+  - name: Highest SLA Commitments
+storage:
+- label: Active Storage
+  price: '$0.042 per GB-hour'
+- label: Retained Storage
+  price: '$0.00105 per GB-hour'
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

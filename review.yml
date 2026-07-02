@@ -1,0 +1,155 @@
+aid: temporal-io
+name: Temporal
+review:
+  question: Does Temporal expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-02'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Temporal's public API surface is gRPC
+    (WorkflowService, OperatorService, and the Cloud Operations API) plus a
+    first-party HTTP API that is a grpc-gateway mapping a REST/JSON subset of the
+    WorkflowService onto /api/v1 paths. There is no server-push transport
+    (WebSocket or SSE) on Temporal's own API to model. Temporal's "streaming"
+    semantics are delivered through workers long-polling task queues over gRPC
+    (PollWorkflowTaskQueue, PollActivityTaskQueue, PollNexusTaskQueue) - a
+    client-initiated long-poll RPC pattern, not a WebSocket or event stream.
+findings:
+  summary: |
+    Temporal does not publish a documented public WebSocket API. Temporal is a
+    durable execution platform whose primary and complete API is gRPC. The
+    WorkflowService and OperatorService are defined as protobuf in
+    github.com/temporalio/api and served over gRPC (default port 7233); the
+    Temporal Cloud Operations API (CloudService) is defined in
+    github.com/temporalio/cloud-api and served over gRPC at
+    saas-api.tmprl.cloud:443. Temporal additionally ships a first-party HTTP API:
+    a grpc-gateway that maps a REST/JSON subset of the WorkflowService onto paths
+    under /api/v1 (e.g. POST /api/v1/namespaces/{namespace}/workflows/{workflow_id}
+    to start a workflow), for automation and environments where gRPC is
+    impractical. The Cloud Operations API is likewise available as an HTTP/REST
+    grpc-gateway under https://saas-api.tmprl.cloud/api/v1 (public preview). No
+    realtime, bidirectional, or streaming WebSocket (ws:// or wss://) endpoint is
+    documented anywhere in Temporal's API surface. Worker task delivery uses gRPC
+    long-polling, not WebSocket.
+  openSource: |
+    The core Temporal server is open source (MIT, github.com/temporalio/temporal)
+    and self-hostable; the gRPC API contracts live in github.com/temporalio/api
+    and the Cloud control-plane contracts in github.com/temporalio/cloud-api. A
+    managed Temporal Cloud offering also exists. The HTTP API is served by the
+    frontend service (when its HTTP port is enabled) on self-hosted, and per
+    namespace over HTTPS on Temporal Cloud.
+  transports:
+    - protocol: gRPC
+      scheme: grpc
+      baseURL: '<namespace>.<account>.tmprl.cloud:7233'
+      documented: true
+      note: >-
+        Primary transport. WorkflowService and OperatorService (github.com/temporalio/api).
+        Self-hosted default localhost:7233. This is the complete API; SDKs and workers use it.
+    - protocol: gRPC
+      scheme: grpc
+      baseURL: 'saas-api.tmprl.cloud:443'
+      documented: true
+      note: >-
+        Temporal Cloud Operations API (CloudService, github.com/temporalio/cloud-api),
+        requires a temporal-cloud-api-version header. Control plane, not data plane.
+    - protocol: REST
+      scheme: https
+      baseURL: 'https://<namespace>.<account>.tmprl.cloud/api/v1'
+      documented: true
+      note: >-
+        Temporal HTTP API - a grpc-gateway exposing a REST/JSON SUBSET of the
+        WorkflowService (start/describe/list/signal/query/terminate/cancel/reset/
+        history). Not all gRPC methods are exposed; worker task-polling RPCs are
+        gRPC-only. Self-hosted default http://localhost:7243/api/v1.
+    - protocol: REST
+      scheme: https
+      baseURL: 'https://saas-api.tmprl.cloud/api/v1'
+      documented: true
+      note: >-
+        HTTP/REST grpc-gateway for the Cloud Operations API (public preview) -
+        namespaces, users, service accounts, API keys, regions, account.
+    - protocol: gRPC long-poll
+      scheme: grpc
+      documented: true
+      note: >-
+        Workers receive tasks by long-polling task queues (PollWorkflowTaskQueue,
+        PollActivityTaskQueue, PollNexusTaskQueue). Client-initiated long-poll RPC,
+        not server push and not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: >-
+        No WebSocket endpoint is documented anywhere in Temporal's gRPC services,
+        HTTP API, or Cloud Operations API as of the review date.
+  endpointsConfirmedGrpc:
+    - WorkflowService/StartWorkflowExecution
+    - WorkflowService/SignalWorkflowExecution
+    - WorkflowService/SignalWithStartWorkflowExecution
+    - WorkflowService/QueryWorkflow
+    - WorkflowService/UpdateWorkflowExecution
+    - WorkflowService/DescribeWorkflowExecution
+    - WorkflowService/ListWorkflowExecutions
+    - WorkflowService/CountWorkflowExecutions
+    - WorkflowService/GetWorkflowExecutionHistory
+    - WorkflowService/RequestCancelWorkflowExecution
+    - WorkflowService/TerminateWorkflowExecution
+    - WorkflowService/ResetWorkflowExecution
+    - WorkflowService/PollWorkflowTaskQueue
+    - WorkflowService/PollActivityTaskQueue
+    - WorkflowService/PollNexusTaskQueue
+    - WorkflowService/CreateSchedule
+    - WorkflowService/StartBatchOperation
+    - OperatorService/ListSearchAttributes
+    - OperatorService/AddSearchAttributes
+    - OperatorService/CreateNexusEndpoint
+    - OperatorService/ListNexusEndpoints
+    - CloudService (namespaces, users, service accounts, API keys, regions, account)
+  endpointsModeledRest:
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_id}
+    - GET    /api/v1/namespaces/{namespace}/workflows/{execution.workflow_id}
+    - GET    /api/v1/namespaces/{namespace}/workflows
+    - GET    /api/v1/namespaces/{namespace}/workflow-count
+    - GET    /api/v1/namespaces/{namespace}/archived-workflows
+    - GET    /api/v1/namespaces/{namespace}/workflows/{execution.workflow_id}/history
+    - GET    /api/v1/namespaces/{namespace}/workflows/{execution.workflow_id}/history-reverse
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/signal/{signal_name}
+    - POST   /api/v1/namespaces/{namespace}/workflows/{execution.workflow_id}/query/{query.query_type}
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/update/{name}
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/cancel
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/terminate
+    - POST   /api/v1/namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/reset
+    - GET    /api/v1/namespaces/{namespace}
+    - GET    /api/v1/namespaces
+    - GET    /api/v1/cluster-info
+    - GET    /api/v1/system-info
+sources:
+  - url: https://docs.temporal.io/references/api-reference
+    type: Documentation
+    note: Points to the gRPC WorkflowService/OperatorService proto as the canonical API reference.
+  - url: https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+    type: SourceCode
+    note: WorkflowService protobuf; google.api.http annotations define the HTTP API subset. gRPC is the full surface.
+  - url: https://github.com/temporalio/api/blob/master/temporal/api/operatorservice/v1/service.proto
+    type: SourceCode
+    note: OperatorService protobuf; only ListSearchAttributes and Nexus endpoint RPCs carry HTTP annotations.
+  - url: https://docs.temporal.io/ops
+    type: Documentation
+    note: Temporal Cloud Operations API - gRPC (saas-api.tmprl.cloud:443) plus HTTP grpc-gateway (public preview). No WebSocket.
+  - url: https://github.com/temporalio/cloud-api
+    type: SourceCode
+    note: CloudService proto files; HTTP and gRPC control-plane API.
+  - url: https://docs.temporal.io/self-hosted-guide/server-frontend-api-reference
+    type: Documentation
+    note: Frontend gRPC API reference; documents WorkflowService/OperatorService/HealthService over gRPC.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Temporal's own public API is gRPC
+    (WorkflowService, OperatorService, CloudService) plus an HTTP grpc-gateway
+    that exposes a REST/JSON subset of the WorkflowService. No AsyncAPI document
+    was created because there is no server-push transport (WebSocket or SSE) on
+    Temporal's own API to model; worker task delivery is a client-initiated gRPC
+    long-poll pattern, not an event stream.
