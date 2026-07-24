@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: Temporal HTTP Cluster Workflow Lifecycle API
+  description: The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`. Temporal's primary and complete API surface is gRPC (WorkflowService and OperatorService, defined as protobuf in github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and environments where gRPC is impractical, and it exposes only a subset of the gRPC methods. The worker task-polling and task-completion RPCs (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted, PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS; self-hosted it is served by the frontend service when the HTTP port is enabled. Requests authenticate with a Bearer API key (or mTLS on self-hosted). The paths and verbs below are drawn from the google.api.http annotations on the WorkflowService proto and are modeled here, not exhaustively confirmed against a live namespace.
+  version: '1.0'
+  contact:
+    name: Temporal Technologies
+    url: https://temporal.io
+  license:
+    name: MIT
+    url: https://github.com/temporalio/api/blob/master/LICENSE
+servers:
+- url: https://{namespace}.{account}.tmprl.cloud/api/v1
+  description: Temporal Cloud (per-namespace HTTP API endpoint)
+  variables:
+    namespace:
+      default: your-namespace
+      description: Your Temporal Cloud namespace name.
+    account:
+      default: your-account
+      description: Your Temporal Cloud account (short) ID.
+- url: http://localhost:7243/api/v1
+  description: Self-hosted frontend HTTP API (when the HTTP port is enabled)
+security:
+- bearerAuth: []
+tags:
+- name: Workflow Lifecycle
+  description: Cancel, terminate, and reset workflow executions.
+paths:
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/cancel:
+    parameters:
+    - $ref: '#/components/parameters/Namespace'
+    - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: requestCancelWorkflowExecution
+      tags:
+      - Workflow Lifecycle
+      summary: Request cancellation of a workflow execution
+      description: Requests graceful cancellation of a workflow execution. Maps to the gRPC RequestCancelWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Cancellation was requested.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/terminate:
+    parameters:
+    - $ref: '#/components/parameters/Namespace'
+    - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: terminateWorkflowExecution
+      tags:
+      - Workflow Lifecycle
+      summary: Terminate a workflow execution
+      description: Forcefully terminates a workflow execution. Maps to the gRPC TerminateWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminateWorkflowExecutionRequest'
+      responses:
+        '200':
+          description: The workflow execution was terminated.
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /namespaces/{namespace}/workflows/{workflow_execution.workflow_id}/reset:
+    parameters:
+    - $ref: '#/components/parameters/Namespace'
+    - $ref: '#/components/parameters/WorkflowExecutionWorkflowId'
+    post:
+      operationId: resetWorkflowExecution
+      tags:
+      - Workflow Lifecycle
+      summary: Reset a workflow execution
+      description: Resets a workflow execution to a prior point in its history, creating a new run. Maps to the gRPC ResetWorkflowExecution RPC.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The reset run ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  schemas:
+    TerminateWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        reason:
+          type: string
+        details:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    Payloads:
+      type: object
+      description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
+      properties:
+        payloads:
+          type: array
+          items:
+            type: object
+            properties:
+              metadata:
+                type: object
+                additionalProperties:
+                  type: string
+                  format: byte
+              data:
+                type: string
+                format: byte
+  parameters:
+    Namespace:
+      name: namespace
+      in: path
+      required: true
+      description: The Temporal namespace.
+      schema:
+        type: string
+    WorkflowExecutionWorkflowId:
+      name: workflow_execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Bearer API key. On Temporal Cloud, pass an API key as `Authorization: Bearer <api-key>`. Self-hosted deployments may use mTLS instead. Requests are scoped to the namespace in the path.'
