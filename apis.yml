@@ -11,7 +11,20 @@ description: >-
   the WorkflowService onto paths under /api/v1, for automation and environments where
   gRPC is impractical. Temporal is open source (MIT) and self-hostable, and is also
   available as the managed Temporal Cloud.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/temporal-io.png
 tags:
 - Durable Execution
 - Workflow Orchestration
@@ -23,53 +36,6 @@ created: '2026-07-02'
 modified: '2026-07-02'
 specificationVersion: '0.19'
 apis:
-- aid: temporal-io:temporal-io-workflow-service-api
-  name: Temporal Workflow Service API
-  tags:
-  - Workflows
-  - gRPC
-  - Durable Execution
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.temporal.io/references/api-reference
-  baseURL: https://docs.temporal.io/references/api-reference
-  properties:
-  - url: https://docs.temporal.io/references/api-reference
-    type: Documentation
-  - url: https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
-    type: SourceCode
-  - url: openapi/temporal-io-openapi.yml
-    type: OpenAPI
-  description: The core Temporal gRPC service. Clients and workers use it to start,
-    signal, query, describe, list, reset, terminate, and cancel workflow executions,
-    to poll and complete workflow/activity/Nexus tasks, and to manage schedules,
-    updates, and batch operations. Defined as protobuf (WorkflowService) and served
-    over gRPC on port 7233; there is no public REST surface for the full service -
-    only the HTTP API subset (see the Temporal HTTP API).
-- aid: temporal-io:temporal-io-http-api
-  name: Temporal HTTP API
-  tags:
-  - HTTP
-  - REST
-  - Workflows
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.temporal.io/develop/go/temporal-clients
-  baseURL: https://<namespace>.<account>.tmprl.cloud/api/v1
-  properties:
-  - url: https://docs.temporal.io/references/api-reference
-    type: Documentation
-  - url: openapi/temporal-io-openapi.yml
-    type: OpenAPI
-  - url: collections/temporal-io.postman_collection.json
-    type: PostmanCollection
-  - url: collections/temporal-io.opencollection.json
-    type: OpenCollection
-  description: A first-party grpc-gateway that maps a REST/JSON subset of the
-    WorkflowService onto HTTP paths under /api/v1 (for example POST
-    /api/v1/namespaces/{namespace}/workflows/{workflow_id} to start a workflow).
-    It supports the same core operations as the gRPC API - start, describe, list,
-    signal, query, terminate, cancel, reset, and read history - using standard HTTP
-    and Bearer (API key) auth. Not all gRPC methods are exposed over HTTP; the
-    worker task-polling RPCs remain gRPC-only.
 - aid: temporal-io:temporal-io-operator-service-api
   name: Temporal Operator Service API
   tags:
@@ -83,13 +49,14 @@ apis:
   properties:
   - url: https://docs.temporal.io/references/api-reference
     type: Documentation
-  - url: https://github.com/temporalio/api/blob/master/temporal/api/operatorservice/v1/service.proto
+  - url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/operatorservice/v1/service.proto
     type: SourceCode
-  description: The gRPC OperatorService for cluster-level administration - managing
-    custom search attributes (add/remove/list), Nexus endpoints (create/get/update/
-    delete/list), remote clusters, and namespace deletion. A handful of methods
-    (ListSearchAttributes and the Nexus endpoint operations) also carry HTTP
-    annotations; the rest are gRPC-only.
+  description: >-
+    The gRPC OperatorService for cluster-level administration - managing custom search attributes (add/remove/list),
+    Nexus endpoints (create/get/update/ delete/list), remote clusters, and namespace deletion. A handful
+    of methods (ListSearchAttributes and the Nexus endpoint operations) also carry HTTP annotations; the
+    rest are gRPC-only.
 - aid: temporal-io:temporal-io-cloud-operations-api
   name: Temporal Cloud Operations API
   tags:
@@ -105,12 +72,12 @@ apis:
     type: Documentation
   - url: https://github.com/temporalio/cloud-api
     type: SourceCode
-  description: The Temporal Cloud control-plane API (CloudService) for programmatically
-    managing Temporal Cloud resources - namespaces, users, service accounts, API
-    keys, regions, account settings, Nexus endpoints, and usage. It is exposed both
-    as gRPC (saas-api.tmprl.cloud:443, with a temporal-cloud-api-version header) and
-    as an HTTP/REST grpc-gateway under https://saas-api.tmprl.cloud/api/v1 (public
-    preview). Distinct from the per-namespace data-plane WorkflowService.
+  description: >-
+    The Temporal Cloud control-plane API (CloudService) for programmatically managing Temporal Cloud resources
+    - namespaces, users, service accounts, API keys, regions, account settings, Nexus endpoints, and usage.
+    It is exposed both as gRPC (saas-api.tmprl.cloud:443, with a temporal-cloud-api-version header) and
+    as an HTTP/REST grpc-gateway under https://saas-api.tmprl.cloud/api/v1 (public preview). Distinct
+    from the per-namespace data-plane WorkflowService.
 - aid: temporal-io:temporal-io-nexus-api
   name: Temporal Nexus API
   tags:
@@ -125,12 +92,107 @@ apis:
     type: Documentation
   - url: https://github.com/temporalio/api/blob/master/temporal/api/nexus/v1/message.proto
     type: SourceCode
-  description: Temporal Nexus connects Temporal applications across namespaces and
-    teams via named Nexus endpoints backed by synchronous and asynchronous Nexus
-    operations. Endpoints are registered through the OperatorService (Create/Get/
-    Update/Delete/ListNexusEndpoints) and workers serve them through the
-    WorkflowService Nexus task-queue RPCs (PollNexusTaskQueue,
-    RespondNexusTaskCompleted, RespondNexusTaskFailed). Transport is gRPC.
+  description: >-
+    Temporal Nexus connects Temporal applications across namespaces and teams via named Nexus endpoints
+    backed by synchronous and asynchronous Nexus operations. Endpoints are registered through the OperatorService
+    (Create/Get/ Update/Delete/ListNexusEndpoints) and workers serve them through the WorkflowService
+    Nexus task-queue RPCs (PollNexusTaskQueue, RespondNexusTaskCompleted, RespondNexusTaskFailed). Transport
+    is gRPC.
+- aid: temporal-io:temporal-io-cluster-api
+  name: Temporal Cluster API
+  description: Cluster and system information.
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  tags:
+  - Cluster
+  properties:
+  - type: OpenAPI
+    url: openapi/temporal-io-cluster-api-openapi.yml
+  - type: Documentation
+    url: https://docs.temporal.io/references/api-reference
+  - type: SourceCode
+    url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+  - type: PostmanCollection
+    url: collections/temporal-io.postman_collection.json
+  - type: OpenCollection
+    url: collections/temporal-io.opencollection.json
+- aid: temporal-io:temporal-io-namespaces-api
+  name: Temporal Namespaces API
+  description: Read namespace metadata (read-only subset over HTTP).
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  tags:
+  - Namespaces
+  properties:
+  - type: OpenAPI
+    url: openapi/temporal-io-namespaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.temporal.io/references/api-reference
+  - type: SourceCode
+    url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+  - type: PostmanCollection
+    url: collections/temporal-io.postman_collection.json
+  - type: OpenCollection
+    url: collections/temporal-io.opencollection.json
+- aid: temporal-io:temporal-io-workflow-lifecycle-api
+  name: Temporal Workflow Lifecycle API
+  description: Cancel, terminate, and reset workflow executions.
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  tags:
+  - Workflow Lifecycle
+  properties:
+  - type: OpenAPI
+    url: openapi/temporal-io-workflow-lifecycle-api-openapi.yml
+  - type: Documentation
+    url: https://docs.temporal.io/references/api-reference
+  - type: SourceCode
+    url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+  - type: PostmanCollection
+    url: collections/temporal-io.postman_collection.json
+  - type: OpenCollection
+    url: collections/temporal-io.opencollection.json
+- aid: temporal-io:temporal-io-workflow-messaging-api
+  name: Temporal Workflow Messaging API
+  description: Signal, query, and update running workflow executions.
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  tags:
+  - Workflow Messaging
+  properties:
+  - type: OpenAPI
+    url: openapi/temporal-io-workflow-messaging-api-openapi.yml
+  - type: Documentation
+    url: https://docs.temporal.io/references/api-reference
+  - type: SourceCode
+    url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+  - type: PostmanCollection
+    url: collections/temporal-io.postman_collection.json
+  - type: OpenCollection
+    url: collections/temporal-io.opencollection.json
+- aid: temporal-io:temporal-io-workflows-api
+  name: Temporal Workflows API
+  description: Start, describe, list, count, and read the history of workflow executions.
+  humanURL: https://docs.temporal.io/references/api-reference
+  baseURL: https://docs.temporal.io/references/api-reference
+  tags:
+  - Workflows
+  properties:
+  - type: OpenAPI
+    url: openapi/temporal-io-workflows-api-openapi.yml
+  - type: Documentation
+    url: https://docs.temporal.io/references/api-reference
+  - type: SourceCode
+    url: >-
+      https://github.com/temporalio/api/blob/master/temporal/api/workflowservice/v1/service.proto
+  - type: PostmanCollection
+    url: collections/temporal-io.postman_collection.json
+  - type: OpenCollection
+    url: collections/temporal-io.opencollection.json
 common:
 - type: AgenticAccess
   url: agentic-access/temporal-io-agentic-access.yml
