@@ -1,0 +1,22 @@
+{
+  "provider": "temporal-io",
+  "sources": [
+    "temporal-io-cluster-api-openapi.yml",
+    "temporal-io-namespaces-api-openapi.yml",
+    "temporal-io-workflow-lifecycle-api-openapi.yml",
+    "temporal-io-workflow-messaging-api-openapi.yml",
+    "temporal-io-workflows-api-openapi.yml"
+  ],
+  "outputs": [
+    "temporal-io-cluster-api-openapi.yml",
+    "temporal-io-namespaces-api-openapi.yml",
+    "temporal-io-workflow-lifecycle-api-openapi.yml",
+    "temporal-io-workflow-messaging-api-openapi.yml",
+    "temporal-io-workflows-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
