@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP Cluster Namespaces API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Namespaces",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Describe a namespace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              }
+            ]
+          },
+          "docs": "Returns configuration and metadata for a namespace. Maps to the gRPC DescribeNamespace RPC. Namespace creation and updates on Temporal Cloud are performed through the Cloud Operations API, not this data-plane HTTP API."
+        },
+        {
+          "info": {
+            "name": "List namespaces",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces",
+            "params": [
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "next_page_token",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists namespaces visible to the caller. Maps to the gRPC ListNamespaces RPC."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

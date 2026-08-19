@@ -1,0 +1,247 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP Cluster Workflows API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Start a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_id",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID to start (client-assigned)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Starts a new workflow execution. Maps to the gRPC StartWorkflowExecution RPC. The request body carries the workflow type, task queue, input, and options."
+        },
+        {
+          "info": {
+            "name": "Describe a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:execution.workflow_id",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the execution to describe."
+              },
+              {
+                "name": "execution.run_id",
+                "value": "",
+                "type": "query",
+                "description": "Optional run ID; defaults to the latest run."
+              }
+            ]
+          },
+          "docs": "Returns information about the specified workflow execution - its status, type, task queue, timestamps, pending activities, and more. Maps to the gRPC DescribeWorkflowExecution RPC."
+        },
+        {
+          "info": {
+            "name": "List workflow executions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "A List Filter (visibility query) to filter executions."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "next_page_token",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists workflow executions in a namespace, optionally filtered with a List Filter (SQL-like visibility query). Maps to the gRPC ListWorkflowExecutions RPC."
+        },
+        {
+          "info": {
+            "name": "Count workflow executions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflow-count",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the number of workflow executions matching a visibility query. Maps to the gRPC CountWorkflowExecutions RPC."
+        },
+        {
+          "info": {
+            "name": "List archived workflow executions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/archived-workflows",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "next_page_token",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists workflow executions that have been archived. Maps to the gRPC ListArchivedWorkflowExecutions RPC."
+        },
+        {
+          "info": {
+            "name": "Get workflow execution history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:execution.workflow_id/history",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              },
+              {
+                "name": "execution.run_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "next_page_token",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the event history of a workflow execution. Maps to the gRPC GetWorkflowExecutionHistory RPC."
+        },
+        {
+          "info": {
+            "name": "Get workflow execution history (reverse)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:execution.workflow_id/history-reverse",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              },
+              {
+                "name": "execution.run_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "next_page_token",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the event history of a workflow execution in reverse order. Maps to the gRPC GetWorkflowExecutionHistoryReverse RPC."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

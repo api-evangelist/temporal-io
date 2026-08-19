@@ -1,0 +1,1142 @@
+{
+  "item": [
+    {
+      "id": "8d73fad8-75c6-488e-97bc-9c82d802d7b1",
+      "name": "Workflow Messaging",
+      "description": {
+        "content": "Signal, query, and update running workflow executions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8db222bf-5498-481e-b982-53be2c097690",
+          "name": "Signal a workflow execution",
+          "request": {
+            "name": "Signal a workflow execution",
+            "description": {
+              "content": "Sends a signal (named message with optional payload) to a running workflow execution. Maps to the gRPC SignalWorkflowExecution RPC.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "namespaces",
+                ":namespace",
+                "workflows",
+                ":workflow_execution.workflow_id",
+                "signal",
+                ":signal_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "{{namespace}}",
+                  "key": "namespace",
+                  "description": "Your Temporal Cloud namespace name."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "workflow_execution.workflow_id",
+                  "description": "(Required) The workflow ID of the target execution."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "signal_name",
+                  "description": "(Required) The name of the signal to send."
+                },
+                {
+                  "description": "Your Temporal Cloud account (short) ID.",
+                  "type": "any",
+                  "value": "{{account}}",
+                  "key": "account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workflowExecution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"signalName\": \"<string>\",\n  \"input\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"identity\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "95ab7b8e-3e21-49a4-a44f-967357a19c28",
+              "name": "The signal was accepted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "signal",
+                    ":signal_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "signal_name",
+                      "description": "(Required) The name of the signal to send."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflowExecution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"signalName\": \"<string>\",\n  \"input\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\",\n          \"key_1\": \"<byte>\",\n          \"key_2\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"identity\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56ae788e-4834-475e-a23a-78a60b0df74a",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "signal",
+                    ":signal_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "signal_name",
+                      "description": "(Required) The name of the signal to send."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflowExecution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"signalName\": \"<string>\",\n  \"input\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\",\n          \"key_1\": \"<byte>\",\n          \"key_2\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"identity\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 6363,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 8874.451717291644\n    },\n    {\n      \"key_0\": 90,\n      \"key_1\": false\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7997df1-019f-4613-89b2-5bec6df2d432",
+              "name": "The requested workflow execution or namespace was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "signal",
+                    ":signal_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "signal_name",
+                      "description": "(Required) The name of the signal to send."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflowExecution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"signalName\": \"<string>\",\n  \"input\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\",\n          \"key_1\": \"<byte>\",\n          \"key_2\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"identity\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f10128e-21f1-467d-bb49-b924991bcdea",
+              "name": "The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "signal",
+                    ":signal_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "signal_name",
+                      "description": "(Required) The name of the signal to send."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflowExecution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"signalName\": \"<string>\",\n  \"input\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\",\n          \"key_1\": \"<byte>\",\n          \"key_2\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"identity\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bcab0a7d-2a6f-4de9-8c86-9db76b4763a8",
+          "name": "Query a workflow execution",
+          "request": {
+            "name": "Query a workflow execution",
+            "description": {
+              "content": "Executes a synchronous query against a running (or closed) workflow execution and returns the query result. Maps to the gRPC QueryWorkflow RPC.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "namespaces",
+                ":namespace",
+                "workflows",
+                ":execution.workflow_id",
+                "query",
+                ":query.query_type"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "{{namespace}}",
+                  "key": "namespace",
+                  "description": "Your Temporal Cloud namespace name."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "execution.workflow_id",
+                  "description": "(Required) The workflow ID of the target execution."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "query.query_type",
+                  "description": "(Required) The name of the query to execute."
+                },
+                {
+                  "description": "Your Temporal Cloud account (short) ID.",
+                  "type": "any",
+                  "value": "{{account}}",
+                  "key": "account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"execution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"query\": {\n    \"queryType\": \"<string>\",\n    \"queryArgs\": {\n      \"payloads\": [\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\",\n            \"key_1\": \"<byte>\",\n            \"key_2\": \"<byte>\",\n            \"key_3\": \"<byte>\",\n            \"key_4\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        },\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        }\n      ]\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c6f6d8ac-87ea-44f7-9bab-bf26ac806ff6",
+              "name": "The query result.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":execution.workflow_id",
+                    "query",
+                    ":query.query_type"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query.query_type",
+                      "description": "(Required) The name of the query to execute."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"execution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"query\": {\n    \"queryType\": \"<string>\",\n    \"queryArgs\": {\n      \"payloads\": [\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        },\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"queryResult\": {\n    \"payloads\": [\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      },\n      {\n        \"metadata\": {\n          \"key_0\": \"<byte>\"\n        },\n        \"data\": \"<byte>\"\n      }\n    ]\n  },\n  \"queryRejected\": {\n    \"key_0\": 2420.573077964643\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7264a6cb-265a-4c6e-b76a-92191103663b",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":execution.workflow_id",
+                    "query",
+                    ":query.query_type"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query.query_type",
+                      "description": "(Required) The name of the query to execute."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"execution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"query\": {\n    \"queryType\": \"<string>\",\n    \"queryArgs\": {\n      \"payloads\": [\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        },\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8b4135a-e632-4791-89a0-d2e20dafcf9f",
+              "name": "The requested workflow execution or namespace was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":execution.workflow_id",
+                    "query",
+                    ":query.query_type"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query.query_type",
+                      "description": "(Required) The name of the query to execute."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"execution\": {\n    \"workflowId\": \"<string>\",\n    \"runId\": \"<string>\"\n  },\n  \"query\": {\n    \"queryType\": \"<string>\",\n    \"queryArgs\": {\n      \"payloads\": [\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        },\n        {\n          \"metadata\": {\n            \"key_0\": \"<byte>\"\n          },\n          \"data\": \"<byte>\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6e3a1d38-6100-484e-9529-0c9c84e11f14",
+          "name": "Update a workflow execution",
+          "request": {
+            "name": "Update a workflow execution",
+            "description": {
+              "content": "Invokes an update handler on a running workflow execution, optionally waiting for a specified lifecycle stage, and returns the update result. Maps to the gRPC UpdateWorkflowExecution RPC.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "namespaces",
+                ":namespace",
+                "workflows",
+                ":workflow_execution.workflow_id",
+                "update",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "{{namespace}}",
+                  "key": "namespace",
+                  "description": "Your Temporal Cloud namespace name."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "workflow_execution.workflow_id",
+                  "description": "(Required) The workflow ID of the target execution."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) The name of the update handler to invoke."
+                },
+                {
+                  "description": "Your Temporal Cloud account (short) ID.",
+                  "type": "any",
+                  "value": "{{account}}",
+                  "key": "account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key_0\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a742be62-122a-4dc8-8750-53383f57d3d2",
+              "name": "The update outcome.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "update",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) The name of the update handler to invoke."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true,\n  \"key_3\": 6760.273377996785\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true,\n  \"key_3\": 6760.273377996785\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9a9018b-4882-4fb3-891d-8f9559a3865d",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "update",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) The name of the update handler to invoke."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true,\n  \"key_3\": 6760.273377996785\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84fd94d2-8484-4c6b-b7d5-45708caa85a4",
+              "name": "The requested workflow execution or namespace was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "namespaces",
+                    ":namespace",
+                    "workflows",
+                    ":workflow_execution.workflow_id",
+                    "update",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace",
+                      "description": "Your Temporal Cloud namespace name."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workflow_execution.workflow_id",
+                      "description": "(Required) The workflow ID of the target execution."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) The name of the update handler to invoke."
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\",\n  \"key_2\": true,\n  \"key_3\": 6760.273377996785\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8559,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 4242.795852802422\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Your Temporal Cloud namespace name.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "your-namespace",
+      "key": "namespace"
+    },
+    {
+      "description": {
+        "content": "Your Temporal Cloud account (short) ID.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "your-account",
+      "key": "account"
+    },
+    {
+      "type": "string",
+      "value": "https://{{namespace}}.{{account}}.tmprl.cloud/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "e94395a3-5280-4e1b-979d-2414d7947e96",
+    "name": "Temporal HTTP Cluster Workflow Messaging API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`. Temporal's primary and complete API surface is gRPC (WorkflowService and OperatorService, defined as protobuf in github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and environments where gRPC is impractical, and it exposes only a subset of the gRPC methods. The worker task-polling and task-completion RPCs (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted, PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS; self-hosted it is served by the frontend service when the HTTP port is enabled. Requests authenticate with a Bearer API key (or mTLS on self-hosted). The paths and verbs below are drawn from the google.api.http annotations on the WorkflowService proto and are modeled here, not exhaustively confirmed against a live namespace.\n\nContact Support:\n Name: Temporal Technologies",
+      "type": "text/plain"
+    }
+  }
+}

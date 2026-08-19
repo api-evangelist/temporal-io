@@ -1,0 +1,379 @@
+{
+  "item": [
+    {
+      "id": "6447e5b8-4356-41eb-bbd3-131c5d148aee",
+      "name": "Cluster",
+      "description": {
+        "content": "Cluster and system information.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6afd36a0-c82d-41ac-a466-998c532bbe98",
+          "name": "Get cluster info",
+          "request": {
+            "name": "Get cluster info",
+            "description": {
+              "content": "Returns information about the Temporal cluster (versions, capabilities). Maps to the gRPC GetClusterInfo RPC.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cluster-info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Your Temporal Cloud namespace name.",
+                  "type": "any",
+                  "value": "{{namespace}}",
+                  "key": "namespace"
+                },
+                {
+                  "description": "Your Temporal Cloud account (short) ID.",
+                  "type": "any",
+                  "value": "{{account}}",
+                  "key": "account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "00ccbc1a-6fb3-4467-b554-4eb74117df74",
+              "name": "Cluster information.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cluster-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Your Temporal Cloud namespace name.",
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace"
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 1591,\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0872b54-8c82-4d3f-ac61-3c106ef59bf4",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cluster-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Your Temporal Cloud namespace name.",
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace"
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 4652,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": 516.7819375334803,\n      \"key_1\": false,\n      \"key_2\": 423.6999459415158,\n      \"key_3\": 5238.520851207495\n    },\n    {\n      \"key_0\": 3066.064477636049,\n      \"key_1\": 1897\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1aa4d50b-b6b8-403b-a0b6-8c6cf227c948",
+          "name": "Get system info",
+          "request": {
+            "name": "Get system info",
+            "description": {
+              "content": "Returns server capabilities and system information. Maps to the gRPC GetSystemInfo RPC.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "system-info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Your Temporal Cloud namespace name.",
+                  "type": "any",
+                  "value": "{{namespace}}",
+                  "key": "namespace"
+                },
+                {
+                  "description": "Your Temporal Cloud account (short) ID.",
+                  "type": "any",
+                  "value": "{{account}}",
+                  "key": "account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5cd95ef5-8222-4c6a-88f9-076875aebc89",
+              "name": "System information and capabilities.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "system-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Your Temporal Cloud namespace name.",
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace"
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 1591,\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a579d461-a1b4-4461-8c97-c81ec5fe6738",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "system-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Your Temporal Cloud namespace name.",
+                      "type": "any",
+                      "value": "{{namespace}}",
+                      "key": "namespace"
+                    },
+                    {
+                      "description": "Your Temporal Cloud account (short) ID.",
+                      "type": "any",
+                      "value": "{{account}}",
+                      "key": "account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 7489,\n  \"message\": \"string\",\n  \"details\": [\n    {\n      \"key_0\": \"string\"\n    },\n    {\n      \"key_0\": false,\n      \"key_1\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Your Temporal Cloud namespace name.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "your-namespace",
+      "key": "namespace"
+    },
+    {
+      "description": {
+        "content": "Your Temporal Cloud account (short) ID.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "your-account",
+      "key": "account"
+    },
+    {
+      "type": "string",
+      "value": "https://{{namespace}}.{{account}}.tmprl.cloud/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3cf27fe4-7bf4-4aad-b433-608fcd6145c7",
+    "name": "Temporal HTTP Cluster API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`. Temporal's primary and complete API surface is gRPC (WorkflowService and OperatorService, defined as protobuf in github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and environments where gRPC is impractical, and it exposes only a subset of the gRPC methods. The worker task-polling and task-completion RPCs (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted, PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS; self-hosted it is served by the frontend service when the HTTP port is enabled. Requests authenticate with a Bearer API key (or mTLS on self-hosted). The paths and verbs below are drawn from the google.api.http annotations on the WorkflowService proto and are modeled here, not exhaustively confirmed against a live namespace.\n\nContact Support:\n Name: Temporal Technologies",
+      "type": "text/plain"
+    }
+  }
+}

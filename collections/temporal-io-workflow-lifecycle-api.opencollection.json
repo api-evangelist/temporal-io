@@ -1,0 +1,111 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP Cluster Workflow Lifecycle API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflow Lifecycle",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Request cancellation of a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_execution.workflow_id/cancel",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Requests graceful cancellation of a workflow execution. Maps to the gRPC RequestCancelWorkflowExecution RPC."
+        },
+        {
+          "info": {
+            "name": "Terminate a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_execution.workflow_id/terminate",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Forcefully terminates a workflow execution. Maps to the gRPC TerminateWorkflowExecution RPC."
+        },
+        {
+          "info": {
+            "name": "Reset a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_execution.workflow_id/reset",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Resets a workflow execution to a prior point in its history, creating a new run. Maps to the gRPC ResetWorkflowExecution RPC."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

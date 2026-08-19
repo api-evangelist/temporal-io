@@ -1,0 +1,46 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP Cluster API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cluster",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get cluster info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/cluster-info"
+          },
+          "docs": "Returns information about the Temporal cluster (versions, capabilities). Maps to the gRPC GetClusterInfo RPC."
+        },
+        {
+          "info": {
+            "name": "Get system info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/system-info"
+          },
+          "docs": "Returns server capabilities and system information. Maps to the gRPC GetSystemInfo RPC."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

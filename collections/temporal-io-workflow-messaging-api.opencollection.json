@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Temporal HTTP Cluster Workflow Messaging API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflow Messaging",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Signal a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_execution.workflow_id/signal/:signal_name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              },
+              {
+                "name": "signal_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the signal to send."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends a signal (named message with optional payload) to a running workflow execution. Maps to the gRPC SignalWorkflowExecution RPC."
+        },
+        {
+          "info": {
+            "name": "Query a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:execution.workflow_id/query/:query.query_type",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              },
+              {
+                "name": "query.query_type",
+                "value": "",
+                "type": "path",
+                "description": "The name of the query to execute."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a synchronous query against a running (or closed) workflow execution and returns the query result. Maps to the gRPC QueryWorkflow RPC."
+        },
+        {
+          "info": {
+            "name": "Update a workflow execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{namespace}.{account}.tmprl.cloud/api/v1/namespaces/:namespace/workflows/:workflow_execution.workflow_id/update/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "The Temporal namespace."
+              },
+              {
+                "name": "workflow_execution.workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The workflow ID of the target execution."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the update handler to invoke."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Invokes an update handler on a running workflow execution, optionally waiting for a specified lifecycle stage, and returns the update result. Maps to the gRPC UpdateWorkflowExecution RPC."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
