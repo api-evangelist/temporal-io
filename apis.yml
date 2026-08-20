@@ -30,6 +30,13 @@ tags:
 - Workflow Orchestration
 - gRPC
 - Workflows
+- Open-Source
+- Temporal Cloud
+tags_raw:
+- Durable Execution
+- Workflow Orchestration
+- gRPC
+- Workflows
 - Open Source
 - Temporal Cloud
 created: '2026-07-02'
@@ -60,6 +67,11 @@ apis:
 - aid: temporal-io:temporal-io-cloud-operations-api
   name: Temporal Cloud Operations API
   tags:
+  - Temporal Cloud
+  - Control Plane
+  - Namespaces
+  - User
+  tags_raw:
   - Temporal Cloud
   - Control Plane
   - Namespaces
