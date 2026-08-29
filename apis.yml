@@ -11,6 +11,19 @@ description: >-
   the WorkflowService onto paths under /api/v1, for automation and environments where
   gRPC is impractical. Temporal is open source (MIT) and self-hostable, and is also
   available as the managed Temporal Cloud.
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
