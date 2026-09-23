@@ -1,7 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Temporal HTTP Cluster Workflows API
-  description: The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`. Temporal's primary and complete API surface is gRPC (WorkflowService and OperatorService, defined as protobuf in github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and environments where gRPC is impractical, and it exposes only a subset of the gRPC methods. The worker task-polling and task-completion RPCs (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted, PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS; self-hosted it is served by the frontend service when the HTTP port is enabled. Requests authenticate with a Bearer API key (or mTLS on self-hosted). The paths and verbs below are drawn from the google.api.http annotations on the WorkflowService proto and are modeled here, not exhaustively confirmed against a live namespace.
+  title: Temporal HTTP Workflows API
+  description: The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`.
   version: '1.0'
   contact:
     name: Temporal Technologies
@@ -257,23 +257,22 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    DescribeWorkflowExecutionResponse:
+    GetWorkflowExecutionHistoryResponse:
       type: object
-      additionalProperties: true
       properties:
-        workflowExecutionInfo:
+        history:
           type: object
-          additionalProperties: true
-        pendingActivities:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    WorkflowType:
-      type: object
-      properties:
-        name:
+          properties:
+            events:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+        nextPageToken:
           type: string
+          format: byte
+        archived:
+          type: boolean
     StartWorkflowExecutionRequest:
       type: object
       properties:
@@ -297,6 +296,27 @@ components:
           type: string
         workflowTaskTimeout:
           type: string
+    WorkflowType:
+      type: object
+      properties:
+        name:
+          type: string
+    StartWorkflowExecutionResponse:
+      type: object
+      properties:
+        runId:
+          type: string
+    ListWorkflowExecutionsResponse:
+      type: object
+      properties:
+        executions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        nextPageToken:
+          type: string
+          format: byte
     Status:
       type: object
       description: A google.rpc.Status-style error payload.
@@ -310,45 +330,6 @@ components:
           items:
             type: object
             additionalProperties: true
-    GetWorkflowExecutionHistoryResponse:
-      type: object
-      properties:
-        history:
-          type: object
-          properties:
-            events:
-              type: array
-              items:
-                type: object
-                additionalProperties: true
-        nextPageToken:
-          type: string
-          format: byte
-        archived:
-          type: boolean
-    StartWorkflowExecutionResponse:
-      type: object
-      properties:
-        runId:
-          type: string
-    TaskQueue:
-      type: object
-      properties:
-        name:
-          type: string
-        kind:
-          type: string
-    ListWorkflowExecutionsResponse:
-      type: object
-      properties:
-        executions:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        nextPageToken:
-          type: string
-          format: byte
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -366,9 +347,28 @@ components:
               data:
                 type: string
                 format: byte
+    TaskQueue:
+      type: object
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+    DescribeWorkflowExecutionResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        workflowExecutionInfo:
+          type: object
+          additionalProperties: true
+        pendingActivities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
   responses:
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
+    ResourceExhausted:
+      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
       content:
         application/json:
           schema:
@@ -379,25 +379,25 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-    ResourceExhausted:
-      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
   parameters:
-    ExecutionWorkflowId:
-      name: execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
     Namespace:
       name: namespace
       in: path
       required: true
       description: The Temporal namespace.
+      schema:
+        type: string
+    ExecutionWorkflowId:
+      name: execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
       schema:
         type: string
   securitySchemes:

@@ -1,7 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Temporal HTTP Cluster API
-  description: The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`. Temporal's primary and complete API surface is gRPC (WorkflowService and OperatorService, defined as protobuf in github.com/temporalio/api); this HTTP API exists for automation, CI/CD, and environments where gRPC is impractical, and it exposes only a subset of the gRPC methods. The worker task-polling and task-completion RPCs (PollWorkflowTaskQueue, PollActivityTaskQueue, RespondWorkflowTaskCompleted, PollNexusTaskQueue, and similar) are NOT exposed over HTTP and remain gRPC-only. On Temporal Cloud the HTTP API is served per namespace over HTTPS; self-hosted it is served by the frontend service when the HTTP port is enabled. Requests authenticate with a Bearer API key (or mTLS on self-hosted). The paths and verbs below are drawn from the google.api.http annotations on the WorkflowService proto and are modeled here, not exhaustively confirmed against a live namespace.
+  description: The Temporal HTTP API is a first-party grpc-gateway that maps a REST/JSON subset of the Temporal WorkflowService (gRPC) onto HTTP paths under `/api/v1`.
   version: '1.0'
   contact:
     name: Temporal Technologies
