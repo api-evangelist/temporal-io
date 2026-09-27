@@ -114,35 +114,23 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    WorkflowExecutionWorkflowId:
-      name: workflow_execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
-    Namespace:
-      name: namespace
-      in: path
-      required: true
-      description: The Temporal namespace.
-      schema:
-        type: string
   schemas:
-    Status:
+    TerminateWorkflowExecutionRequest:
       type: object
-      description: A google.rpc.Status-style error payload.
       properties:
-        code:
-          type: integer
-        message:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        reason:
           type: string
         details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -160,22 +148,19 @@ components:
               data:
                 type: string
                 format: byte
-    TerminateWorkflowExecutionRequest:
+    Status:
       type: object
+      description: A google.rpc.Status-style error payload.
       properties:
-        workflowExecution:
-          type: object
-          properties:
-            workflowId:
-              type: string
-            runId:
-              type: string
-        reason:
+        code:
+          type: integer
+        message:
           type: string
         details:
-          $ref: '#/components/schemas/Payloads'
-        identity:
-          type: string
+          type: array
+          items:
+            type: object
+            additionalProperties: true
   responses:
     Unauthorized:
       description: Missing or invalid API key.
@@ -189,6 +174,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
+  parameters:
+    WorkflowExecutionWorkflowId:
+      name: workflow_execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
+    Namespace:
+      name: namespace
+      in: path
+      required: true
+      description: The Temporal namespace.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

@@ -78,6 +78,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   schemas:
     Status:
       type: object
@@ -100,19 +113,6 @@ components:
       description: The Temporal namespace.
       schema:
         type: string
-  responses:
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
   securitySchemes:
     bearerAuth:
       type: http

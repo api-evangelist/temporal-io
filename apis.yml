@@ -12,17 +12,21 @@ description: >-
   gRPC is impractical. Temporal is open source (MIT) and self-hostable, and is also
   available as the managed Temporal Cloud.
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - temporalio/api
+    - temporalio/cloud-api
   open_source: unknown
   commercial: true
   callable_host: true
-  label: Delivery model not determined — needs a product licence on record
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
   - openapi
   - pricing
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
@@ -44,8 +48,9 @@ tags:
 - Workflow Orchestration
 - gRPC
 - Workflows
-- Open-Source
+- Open Source
 - Temporal Cloud
+- Workflow Automation
 tags_raw:
 - Durable Execution
 - Workflow Orchestration
@@ -53,6 +58,8 @@ tags_raw:
 - Workflows
 - Open Source
 - Temporal Cloud
+- Open-Source
+- Workflow-Automation
 created: '2026-07-02'
 modified: '2026-07-02'
 specificationVersion: '0.23'
