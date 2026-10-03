@@ -132,6 +132,43 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    QueryWorkflowResponse:
+      type: object
+      properties:
+        queryResult:
+          $ref: '#/components/schemas/Payloads'
+        queryRejected:
+          type: object
+          additionalProperties: true
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    SignalWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        signalName:
+          type: string
+        input:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
     QueryWorkflowRequest:
       type: object
       properties:
@@ -149,30 +186,6 @@ components:
               type: string
             queryArgs:
               $ref: '#/components/schemas/Payloads'
-    QueryWorkflowResponse:
-      type: object
-      properties:
-        queryResult:
-          $ref: '#/components/schemas/Payloads'
-        queryRejected:
-          type: object
-          additionalProperties: true
-    SignalWorkflowExecutionRequest:
-      type: object
-      properties:
-        workflowExecution:
-          type: object
-          properties:
-            workflowId:
-              type: string
-            runId:
-              type: string
-        signalName:
-          type: string
-        input:
-          $ref: '#/components/schemas/Payloads'
-        identity:
-          type: string
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -190,25 +203,12 @@ components:
               data:
                 type: string
                 format: byte
-    Status:
-      type: object
-      description: A google.rpc.Status-style error payload.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
   parameters:
-    ExecutionWorkflowId:
-      name: execution.workflow_id
+    Namespace:
+      name: namespace
       in: path
       required: true
-      description: The workflow ID of the target execution.
+      description: The Temporal namespace.
       schema:
         type: string
     WorkflowExecutionWorkflowId:
@@ -218,16 +218,16 @@ components:
       description: The workflow ID of the target execution.
       schema:
         type: string
-    Namespace:
-      name: namespace
+    ExecutionWorkflowId:
+      name: execution.workflow_id
       in: path
       required: true
-      description: The Temporal namespace.
+      description: The workflow ID of the target execution.
       schema:
         type: string
   responses:
-    Unauthorized:
-      description: Missing or invalid API key.
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
       content:
         application/json:
           schema:
@@ -238,8 +238,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
+    Unauthorized:
+      description: Missing or invalid API key.
       content:
         application/json:
           schema:

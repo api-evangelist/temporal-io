@@ -131,6 +131,19 @@ components:
           $ref: '#/components/schemas/Payloads'
         identity:
           type: string
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -148,32 +161,6 @@ components:
               data:
                 type: string
                 format: byte
-    Status:
-      type: object
-      description: A google.rpc.Status-style error payload.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-  responses:
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
   parameters:
     WorkflowExecutionWorkflowId:
       name: workflow_execution.workflow_id
@@ -189,6 +176,19 @@ components:
       description: The Temporal namespace.
       schema:
         type: string
+  responses:
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   securitySchemes:
     bearerAuth:
       type: http
