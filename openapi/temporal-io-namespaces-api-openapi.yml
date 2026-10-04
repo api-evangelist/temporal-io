@@ -92,6 +92,14 @@ components:
           items:
             type: object
             additionalProperties: true
+  parameters:
+    Namespace:
+      name: namespace
+      in: path
+      required: true
+      description: The Temporal namespace.
+      schema:
+        type: string
   responses:
     NotFound:
       description: The requested workflow execution or namespace was not found.
@@ -105,14 +113,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-  parameters:
-    Namespace:
-      name: namespace
-      in: path
-      required: true
-      description: The Temporal namespace.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http

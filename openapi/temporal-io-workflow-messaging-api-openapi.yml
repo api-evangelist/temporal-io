@@ -132,60 +132,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    QueryWorkflowResponse:
-      type: object
-      properties:
-        queryResult:
-          $ref: '#/components/schemas/Payloads'
-        queryRejected:
-          type: object
-          additionalProperties: true
-    Status:
-      type: object
-      description: A google.rpc.Status-style error payload.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    SignalWorkflowExecutionRequest:
-      type: object
-      properties:
-        workflowExecution:
-          type: object
-          properties:
-            workflowId:
-              type: string
-            runId:
-              type: string
-        signalName:
-          type: string
-        input:
-          $ref: '#/components/schemas/Payloads'
-        identity:
-          type: string
-    QueryWorkflowRequest:
-      type: object
-      properties:
-        execution:
-          type: object
-          properties:
-            workflowId:
-              type: string
-            runId:
-              type: string
-        query:
-          type: object
-          properties:
-            queryType:
-              type: string
-            queryArgs:
-              $ref: '#/components/schemas/Payloads'
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -203,7 +149,87 @@ components:
               data:
                 type: string
                 format: byte
+    QueryWorkflowResponse:
+      type: object
+      properties:
+        queryResult:
+          $ref: '#/components/schemas/Payloads'
+        queryRejected:
+          type: object
+          additionalProperties: true
+    QueryWorkflowRequest:
+      type: object
+      properties:
+        execution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        query:
+          type: object
+          properties:
+            queryType:
+              type: string
+            queryArgs:
+              $ref: '#/components/schemas/Payloads'
+    SignalWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        signalName:
+          type: string
+        input:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+  responses:
+    ResourceExhausted:
+      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   parameters:
+    ExecutionWorkflowId:
+      name: execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
     Namespace:
       name: namespace
       in: path
@@ -218,32 +244,6 @@ components:
       description: The workflow ID of the target execution.
       schema:
         type: string
-    ExecutionWorkflowId:
-      name: execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
-  responses:
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    ResourceExhausted:
-      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
   securitySchemes:
     bearerAuth:
       type: http

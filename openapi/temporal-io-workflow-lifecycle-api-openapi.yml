@@ -115,35 +115,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    TerminateWorkflowExecutionRequest:
-      type: object
-      properties:
-        workflowExecution:
-          type: object
-          properties:
-            workflowId:
-              type: string
-            runId:
-              type: string
-        reason:
-          type: string
-        details:
-          $ref: '#/components/schemas/Payloads'
-        identity:
-          type: string
-    Status:
-      type: object
-      description: A google.rpc.Status-style error payload.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -161,19 +132,48 @@ components:
               data:
                 type: string
                 format: byte
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    TerminateWorkflowExecutionRequest:
+      type: object
+      properties:
+        workflowExecution:
+          type: object
+          properties:
+            workflowId:
+              type: string
+            runId:
+              type: string
+        reason:
+          type: string
+        details:
+          $ref: '#/components/schemas/Payloads'
+        identity:
+          type: string
   parameters:
-    WorkflowExecutionWorkflowId:
-      name: workflow_execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
     Namespace:
       name: namespace
       in: path
       required: true
       description: The Temporal namespace.
+      schema:
+        type: string
+    WorkflowExecutionWorkflowId:
+      name: workflow_execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
       schema:
         type: string
   responses:
