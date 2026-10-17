@@ -114,6 +114,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    NotFound:
+      description: The requested workflow execution or namespace was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  parameters:
+    Namespace:
+      name: namespace
+      in: path
+      required: true
+      description: The Temporal namespace.
+      schema:
+        type: string
+    WorkflowExecutionWorkflowId:
+      name: workflow_execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
+      schema:
+        type: string
   schemas:
     Payloads:
       type: object
@@ -132,19 +160,6 @@ components:
               data:
                 type: string
                 format: byte
-    Status:
-      type: object
-      description: A google.rpc.Status-style error payload.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
     TerminateWorkflowExecutionRequest:
       type: object
       properties:
@@ -161,34 +176,19 @@ components:
           $ref: '#/components/schemas/Payloads'
         identity:
           type: string
-  parameters:
-    Namespace:
-      name: namespace
-      in: path
-      required: true
-      description: The Temporal namespace.
-      schema:
-        type: string
-    WorkflowExecutionWorkflowId:
-      name: workflow_execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
-  responses:
-    NotFound:
-      description: The requested workflow execution or namespace was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Missing or invalid API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
+    Status:
+      type: object
+      description: A google.rpc.Status-style error payload.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http

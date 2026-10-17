@@ -257,11 +257,45 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    WorkflowType:
+    GetWorkflowExecutionHistoryResponse:
       type: object
       properties:
-        name:
+        history:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+        nextPageToken:
           type: string
+          format: byte
+        archived:
+          type: boolean
+    ListWorkflowExecutionsResponse:
+      type: object
+      properties:
+        executions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        nextPageToken:
+          type: string
+          format: byte
+    DescribeWorkflowExecutionResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        workflowExecutionInfo:
+          type: object
+          additionalProperties: true
+        pendingActivities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
     Payloads:
       type: object
       description: Temporal payloads envelope. Each payload carries base64-encoded metadata and data.
@@ -299,50 +333,6 @@ components:
           items:
             type: object
             additionalProperties: true
-    DescribeWorkflowExecutionResponse:
-      type: object
-      additionalProperties: true
-      properties:
-        workflowExecutionInfo:
-          type: object
-          additionalProperties: true
-        pendingActivities:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    StartWorkflowExecutionResponse:
-      type: object
-      properties:
-        runId:
-          type: string
-    GetWorkflowExecutionHistoryResponse:
-      type: object
-      properties:
-        history:
-          type: object
-          properties:
-            events:
-              type: array
-              items:
-                type: object
-                additionalProperties: true
-        nextPageToken:
-          type: string
-          format: byte
-        archived:
-          type: boolean
-    ListWorkflowExecutionsResponse:
-      type: object
-      properties:
-        executions:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        nextPageToken:
-          type: string
-          format: byte
     StartWorkflowExecutionRequest:
       type: object
       properties:
@@ -366,13 +356,17 @@ components:
           type: string
         workflowTaskTimeout:
           type: string
+    WorkflowType:
+      type: object
+      properties:
+        name:
+          type: string
+    StartWorkflowExecutionResponse:
+      type: object
+      properties:
+        runId:
+          type: string
   responses:
-    ResourceExhausted:
-      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
     NotFound:
       description: The requested workflow execution or namespace was not found.
       content:
@@ -385,19 +379,25 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
+    ResourceExhausted:
+      description: The namespace rate limit (APS/RPS/OPS) was exceeded. gRPC returns a ResourceExhausted status; over HTTP this surfaces as 429. Clients should back off and retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   parameters:
-    ExecutionWorkflowId:
-      name: execution.workflow_id
-      in: path
-      required: true
-      description: The workflow ID of the target execution.
-      schema:
-        type: string
     Namespace:
       name: namespace
       in: path
       required: true
       description: The Temporal namespace.
+      schema:
+        type: string
+    ExecutionWorkflowId:
+      name: execution.workflow_id
+      in: path
+      required: true
+      description: The workflow ID of the target execution.
       schema:
         type: string
   securitySchemes:
