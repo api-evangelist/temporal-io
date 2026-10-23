@@ -514,6 +514,46 @@ edges:
     detected: '2026-10-23'
   detected_by: sweep-aur-vendor-cli-packages.py
   first_seen: '2026-10-23'
+- partner_name: Buf Schema Registry (BSR) public modules
+  partner: buf
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: third-party
+  evidence: https://buf.build/temporalio
+  category: Protocol Buffers schema publishing (BSR)
+  contract_reference:
+    register: Buf Schema Registry (BSR) public modules
+    spec_file: null
+    standard: Protocol Buffers
+    role: schema-publisher
+    registrations:
+    - registered_name: temporalio
+      register_status: public-modules
+      evidence_url: https://buf.build/temporalio
+      matched_domain: temporal.io
+      matched_by: domain
+      url_source: owner-url
+    modules:
+    - module: buf.build/temporalio/api
+      state: active
+      lapsed: false
+      created: '2025-01-09'
+    - module: buf.build/temporalio/cloud-api
+      state: active
+      lapsed: false
+      created: '2025-02-19'
+    - module: buf.build/temporalio/nexus-annotations
+      state: active
+      lapsed: false
+      created: '2026-03-25'
+    signal_note: 'participation only: the owner publishes Protocol Buffers schema modules on the public BSR; a listing
+      is not conformance (no certified_products)'
+    detected_by: sweep-buf-schema-registry.py
+    detected: '2026-10-23'
+  detected_by: sweep-buf-schema-registry.py
+  first_seen: '2026-10-23'
 generated: '2026-10-15'
 method: searched
 source:
@@ -559,3 +599,6 @@ checked:
 - https://aur.archlinux.org/cgit/aur.git/tree/.SRCINFO
 - https://aur.archlinux.org/packages-meta-ext-v1.json.gz
 - https://aur.archlinux.org/rpc/v5/info
+- https://buf.build/buf.registry.module.v1.ModuleService/ListModules
+- https://buf.build/buf.registry.owner.v1.OwnerService/GetOwners
+- https://buf.build/explore
